@@ -1,13 +1,11 @@
-# Étape de build
-FROM node:16 as build
+FROM node:18-alpine AS build
+RUN npm install -g @angular/cli
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm install
 COPY . .
-RUN npm run build --prod
+RUN npm install
+RUN npm run build -- --configuration=production
 
-# Étape de production
-FROM nginx:alpine
-COPY --from=build /app/dist/overtime-app /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
+
+
+EXPOSE 4200
+CMD ["ng","serve","--host", "0.0.0.0"]
